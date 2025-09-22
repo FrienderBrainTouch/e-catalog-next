@@ -1,16 +1,17 @@
 import ECatalogClient from '../../components/ECatalogClient';
+import Link from 'next/link';
 
 export default function HotelLaundryCatalog() {
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-indigo-50 via-white to-rose-50">
       <header className="sticky top-0 z-50 bg-white/70 backdrop-blur border-b border-indigo-100/60">
         <div className="mx-auto max-w-6xl px-5 h-12 flex items-center justify-between">
-          <a href="/" className="font-semibold text-indigo-700">
+          <Link href="/" className="font-semibold text-indigo-700">
             e‑Catalog
-          </a>
-          <a href="/" className="text-sm text-gray-700 hover:text-indigo-700">
+          </Link>
+          <Link href="/" className="text-sm text-gray-700 hover:text-indigo-700">
             홈
-          </a>
+          </Link>
         </div>
       </header>
       <section className="w-full px-5 py-8 flex flex-col items-center">

@@ -2,8 +2,27 @@
 
 import { RefObject, useEffect, useState } from 'react';
 
+// 최소한으로 필요한 pdf.js 타입 정의 (CDN 모듈을 쓰므로 로컬에서 인터페이스만 정의)
+type PDFViewport = { width: number; height: number };
+type PDFPage = {
+  getViewport: (params: { scale: number }) => PDFViewport;
+  render: (params: {
+    canvasContext: CanvasRenderingContext2D;
+    viewport: PDFViewport;
+    transform?: number[];
+  }) => { promise: Promise<void> };
+};
+type PDFDoc = {
+  numPages: number;
+  getPage: (pageNum: number) => Promise<PDFPage>;
+};
+type PDFJSModule = {
+  GlobalWorkerOptions: { workerSrc: string };
+  getDocument: (url: string) => { promise: Promise<PDFDoc> };
+};
+
 export function usePdfDocument(pdfUrl: string) {
-  const [pdf, setPdf] = useState<any>(null);
+  const [pdf, setPdf] = useState<PDFDoc | null>(null);
   const [numPages, setNumPages] = useState<number>(1);
 
   useEffect(() => {
@@ -12,8 +31,10 @@ export function usePdfDocument(pdfUrl: string) {
       const PDFJS_MJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.4.149/pdf.min.mjs';
       const PDFJS_WORKER_MJS =
         'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.4.149/pdf.worker.min.mjs';
-      // @ts-ignore
-      const pdfjsLib: any = await import(/* webpackIgnore: true */ PDFJS_MJS);
+      // CDN ESM 모듈은 타입이 없어 명시적 단언 사용
+      const pdfjsLib = (await import(
+        /* webpackIgnore: true */ PDFJS_MJS
+      )) as unknown as PDFJSModule;
       pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_MJS;
       const loadingTask = pdfjsLib.getDocument(pdfUrl);
       const _pdf = await loadingTask.promise;
@@ -30,7 +51,7 @@ export function usePdfDocument(pdfUrl: string) {
 }
 
 export function usePdfPageRenderer(
-  pdf: any,
+  pdf: PDFDoc | null,
   pageNum: number,
   scale: number,
   canvasRef: RefObject<HTMLCanvasElement | null>
