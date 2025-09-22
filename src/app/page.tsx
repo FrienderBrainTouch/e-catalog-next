@@ -6,9 +6,9 @@ export default function Home() {
       {/* Navigation */}
       <header className="sticky top-0 z-50 bg-white/70 backdrop-blur border-b border-indigo-100/60">
         <div className="mx-auto max-w-6xl px-5 h-14 flex items-center justify-between">
-          <a href="/" className="font-semibold text-indigo-700">
+          <Link href="/" className="font-semibold text-indigo-700">
             e‑Catalog
-          </a>
+          </Link>
           <nav className="hidden sm:flex items-center gap-6 text-sm text-gray-700">
             <a href="#features" className="hover:text-indigo-700">
               특징
